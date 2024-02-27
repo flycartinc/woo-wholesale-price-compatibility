@@ -12,6 +12,9 @@ class Router
      */
     private static $main;
 
+    /**
+     * @return void
+     */
     function init()
     {
         self::$main = empty(self::$main) ? new Base() : self::$main;
