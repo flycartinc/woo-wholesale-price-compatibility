@@ -48,6 +48,12 @@ if (!class_exists('\WDR\Core\Helpers\Plugin') && file_exists(WP_PLUGIN_DIR . '/w
 if (!class_exists('\WDR\Core\Helpers\Plugin')) {
     return;
 }
+$plugin = new \WDR\Core\Helpers\Plugin();
+$check = $plugin::isActive('woocommerce-wholesale-prices/woocommerce-wholesale-prices.bootstrap.php')
+    || $plugin::isActive('woocommerce-wholesale-prices-premium/woocommerce-wholesale-prices-premium.bootstrap.php');
+if (!$check) {
+    return;
+}
 
 defined('WSPC_PLUGIN_NAME') or define('WSPC_PLUGIN_NAME', 'Woo wholesale prices compatibility');
 defined('WSPC_PLUGIN_VERSION') or define('WSPC_PLUGIN_VERSION', '1.0.0');
