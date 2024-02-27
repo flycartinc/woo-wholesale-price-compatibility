@@ -15,9 +15,7 @@ class Router
     function init()
     {
         self::$main = empty(self::$main) ? new Base() : self::$main;
-
         add_filter('wwp_filter_wholesale_price_html', [self::$main, 'renderWholeSalePrice'], 10, 7);
-        add_filter('advanced_woo_discount_rules_modify_price_html', [self::$main, 'renderModifiedPrice'], 10, 4);
-
+        add_filter('wdr_modify_product_price_html',[self::$main,'renderModifiedPrice'],10,3);
     }
 }
