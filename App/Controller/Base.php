@@ -23,9 +23,10 @@ class Base
      */
     function renderWholeSalePrice($wholesale_price_html, $price, $product, $user_wholesale_role, $wholesale_price_title_text, $raw_wholesale_price, $source): string
     {
-
         self::$disable_strikeout[$product->get_id()] = true;
-
+        if ($product->is_type('grouped')) {
+            return $wholesale_price_html;
+        }
         $result = apply_filters('wdr_get_product_discounted_price', $price, $product, 1, $raw_wholesale_price);
         return ($result !== false) ? "<del>{$wholesale_price_html}</del><ins>{$wholesale_price_title_text} " . wc_price($result) . "</ins>"
             : $wholesale_price_html;
