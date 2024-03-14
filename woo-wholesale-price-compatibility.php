@@ -38,7 +38,20 @@ if (!function_exists('isDiscountRulesActive')) {
     }
 }
 
+
 if (!isWoocommerceActive() || !isDiscountRulesActive()) return;
+
+
+if(!function_exists('isWooDiscountLatestVersion')){
+    function isWooDiscountLatestVersion(){
+        $db_version = get_option('wdr_version', '');
+        if (defined('WDR_PLUGIN_VERSION') && !empty($db_version)){
+            return (version_compare($db_version, WDR_PLUGIN_VERSION, '>='));
+        }
+        return false;
+    }
+}
+if (!isWooDiscountLatestVersion()) return;
 
 if (!class_exists('\WDR\Core\Helpers\Plugin') && file_exists(WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php')) {
     require_once WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php';
@@ -63,6 +76,11 @@ if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
     return;
 }
 require __DIR__ . '/vendor/autoload.php';
+
+$rules = \WDR\Core\Models\Custom\StoreRule::getRules();
+if (empty($rules)){
+    return;
+}
 
 if (class_exists(\WSPC\App\Router::class)){
     $plugin = new \WSPC\App\Router();

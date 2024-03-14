@@ -3,6 +3,7 @@
 namespace WSPC\App\Controller;
 
 defined("ABSPATH") or die();
+
 class Base
 {
     /**
@@ -25,8 +26,7 @@ class Base
 
         self::$disable_strikeout[$product->get_id()] = true;
 
-        $result = apply_filters('wdr_get_product_discounted_price',$price,$product,1,$raw_wholesale_price);
-
+        $result = apply_filters('wdr_get_product_discounted_price', $price, $product, 1, $raw_wholesale_price);
         return ($result !== false) ? "<del>{$wholesale_price_html}</del><ins>{$wholesale_price_title_text} " . wc_price($result) . "</ins>"
             : $wholesale_price_html;
     }
