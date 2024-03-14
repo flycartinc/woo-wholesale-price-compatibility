@@ -45,4 +45,16 @@ class Base
         return isset(self::$disable_strikeout[$product->get_id()]) && self::$disable_strikeout[$product->get_id()] ? false : $enable;
     }
 
+
+    /**
+     * @param $price
+     * @param $from
+     * @param $to
+     * @return void
+     */
+    function setPriceRange($price, $from, $to)
+    {
+        $result = apply_filters('wdr_get_product_discounted_price', $from, $product, 1, $raw_wholesale_price);
+        return $price;
+    }
 }
