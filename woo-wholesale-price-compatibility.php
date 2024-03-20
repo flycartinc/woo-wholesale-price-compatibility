@@ -20,7 +20,8 @@
 defined("ABSPATH") or die();
 
 if (!function_exists('isWoocommerceActive')) {
-    function isWoocommerceActive(){
+    function isWoocommerceActive()
+    {
         $active_plugins = apply_filters('active_plugins', get_option('active_plugins', array()));
         if (is_multisite()) {
             $active_plugins = array_merge($active_plugins, get_site_option('active_sitewide_plugins', array()));
@@ -29,7 +30,8 @@ if (!function_exists('isWoocommerceActive')) {
     }
 }
 if (!function_exists('isDiscountRulesActive')) {
-    function isDiscountRulesActive(){
+    function isDiscountRulesActive()
+    {
         $active_plugins = apply_filters('active_plugins', get_option('active_plugins', array()));
         if (is_multisite()) {
             $active_plugins = array_merge($active_plugins, get_site_option('active_sitewide_plugins', array()));
@@ -42,10 +44,11 @@ if (!function_exists('isDiscountRulesActive')) {
 if (!isWoocommerceActive() || !isDiscountRulesActive()) return;
 
 
-if(!function_exists('isWooDiscountLatestVersion')){
-    function isWooDiscountLatestVersion(){
+if (!function_exists('isWooDiscountLatestVersion')) {
+    function isWooDiscountLatestVersion()
+    {
         $db_version = get_option('wdr_version', '');
-        if (defined('WDR_PLUGIN_VERSION') && !empty($db_version)){
+        if (defined('WDR_PLUGIN_VERSION') && !empty($db_version)) {
             return (version_compare($db_version, WDR_PLUGIN_VERSION, '>='));
         }
         return false;
@@ -55,7 +58,7 @@ if (!isWooDiscountLatestVersion()) return;
 
 if (!class_exists('\WDR\Core\Helpers\Plugin') && file_exists(WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php')) {
     require_once WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php';
-}elseif (file_exists(WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php')){
+} elseif (file_exists(WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php')) {
     require_once WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php';
 }
 if (!class_exists('\WDR\Core\Helpers\Plugin')) {
@@ -77,12 +80,29 @@ if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
 }
 require __DIR__ . '/vendor/autoload.php';
 
-$rules = \WDR\Core\Models\Custom\StoreRule::getRules();
-if (empty($rules)){
-    return;
+if (!function_exists('checkRulesExists')) {
+    function checkRulesExists()
+    {
+        $rules = \WDR\Core\Models\Custom\StoreRule::getRules();
+        if (empty($rules)) {
+            return false;
+        }
+        $res = [];
+        foreach ($rules as $rule) {
+            if (isset($rule->discount_context) && $rule->discount_context == 'item') {
+                $res[] = $rule;
+            }
+        }
+        if (empty($res)) {
+            return false;
+        }
+        return true;
+    }
 }
 
-if (class_exists(\WSPC\App\Router::class)){
+if (!checkRulesExists()) return;
+
+if (class_exists(\WSPC\App\Router::class)) {
     $plugin = new \WSPC\App\Router();
     if (method_exists($plugin, 'init')) $plugin->init();
 }
