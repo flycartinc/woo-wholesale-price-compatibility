@@ -18,7 +18,9 @@
  */
 
 defined("ABSPATH") or die();
-
+/**
+ * Check woocommerce plugin active or not.
+ */
 if (!function_exists('isWoocommerceActive')) {
     function isWoocommerceActive()
     {
@@ -29,6 +31,9 @@ if (!function_exists('isWoocommerceActive')) {
         return in_array('woocommerce/woocommerce.php', $active_plugins, false) || array_key_exists('woocommerce/woocommerce.php', $active_plugins);
     }
 }
+/**
+ * Check Discount rules plugin active or not.
+ */
 if (!function_exists('isDiscountRulesActive')) {
     function isDiscountRulesActive()
     {
@@ -40,10 +45,10 @@ if (!function_exists('isDiscountRulesActive')) {
     }
 }
 
-
 if (!isWoocommerceActive() || !isDiscountRulesActive()) return;
-
-
+/**
+ * Check discount rules plugin is latest.
+ */
 if (!function_exists('isWooDiscountLatestVersion')) {
     function isWooDiscountLatestVersion()
     {
@@ -55,7 +60,6 @@ if (!function_exists('isWooDiscountLatestVersion')) {
     }
 }
 if (!isWooDiscountLatestVersion()) return;
-
 if (!class_exists('\WDR\Core\Helpers\Plugin') && file_exists(WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php')) {
     require_once WP_PLUGIN_DIR . '/woo-discount-rules/vendor/autoload.php';
 } elseif (file_exists(WP_PLUGIN_DIR . '/woo-discount-rules-pro/vendor/autoload.php')) {
@@ -67,9 +71,7 @@ if (!class_exists('\WDR\Core\Helpers\Plugin')) {
 $plugin = new \WDR\Core\Helpers\Plugin();
 $check = $plugin::isActive('woocommerce-wholesale-prices/woocommerce-wholesale-prices.bootstrap.php')
     || $plugin::isActive('woocommerce-wholesale-prices-premium/woocommerce-wholesale-prices-premium.bootstrap.php');
-if (!$check) {
-    return;
-}
+if (!$check) return;
 
 defined('WSPC_PLUGIN_NAME') or define('WSPC_PLUGIN_NAME', 'Woo wholesale prices compatibility');
 defined('WSPC_PLUGIN_VERSION') or define('WSPC_PLUGIN_VERSION', '1.0.0');
@@ -83,23 +85,13 @@ require __DIR__ . '/vendor/autoload.php';
 if (!function_exists('checkRulesExists')) {
     function checkRulesExists()
     {
-        $rules = \WDR\Core\Models\Custom\StoreRule::getRules();
+        $rules = \WDR\Core\Models\Custom\StoreRule::getRules('item');
         if (empty($rules)) {
-            return false;
-        }
-        $res = [];
-        foreach ($rules as $rule) {
-            if (isset($rule->discount_context) && $rule->discount_context == 'item') {
-                $res[] = $rule;
-            }
-        }
-        if (empty($res)) {
             return false;
         }
         return true;
     }
 }
-
 if (!checkRulesExists()) return;
 
 if (class_exists(\WSPC\App\Router::class)) {
