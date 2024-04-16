@@ -44,7 +44,6 @@ if (!function_exists('isDiscountRulesActive')) {
         return in_array('woo-discount-rules-pro/woo-discount-rules-pro.php', $active_plugins, false) || in_array('woo-discount-rules/woo-discount-rules.php', $active_plugins, false);
     }
 }
-
 if (!isWoocommerceActive() || !isDiscountRulesActive()) return;
 /**
  * Check discount rules plugin is latest.
@@ -85,10 +84,17 @@ require __DIR__ . '/vendor/autoload.php';
 if (!function_exists('checkRulesExists')) {
     function checkRulesExists()
     {
-        $rules = \WDR\Core\Models\Custom\StoreRule::getRules('item');
+        $rules = \WDR\Core\Models\Custom\StoreRule::getRules();
         if (empty($rules)) {
             return false;
         }
+        $res =[];
+        foreach ($rules as $rule){
+            if ($rule->getDiscountContext() == 'item' && $rule->getType() == 'product'){
+                $res[] = $rule;
+            }
+        }
+        if (empty($res)) return false;
         return true;
     }
 }
