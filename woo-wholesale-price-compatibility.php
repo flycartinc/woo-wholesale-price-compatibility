@@ -90,7 +90,7 @@ if (!function_exists('checkRulesExists')) {
         }
         $res =[];
         foreach ($rules as $rule){
-            if ($rule->getDiscountContext() == 'item' && $rule->getType() == 'product'){
+            if ($rule->getDiscountContext() == 'item'){
                 $res[] = $rule;
             }
         }
