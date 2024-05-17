@@ -12,6 +12,17 @@ class Base
     private static $disable_strikeout = [];
 
     /**
+     * @param array $hooks
+     * @return array
+     */
+    static function removeSuppressedHooks($hooks){
+        if (empty($hooks) || !is_array($hooks)) return $hooks;
+        if (isset($hooks['woocommerce_get_price_html'])) unset($hooks['woocommerce_get_price_html']);
+        if (isset($hooks['woocommerce_before_calculate_totals'])) unset($hooks['woocommerce_before_calculate_totals']);
+        return $hooks;
+    }
+
+    /**
      * @param $wholesale_price_html
      * @param $price
      * @param $product
@@ -21,7 +32,7 @@ class Base
      * @param $source
      * @return string
      */
-    function renderWholeSalePrice($wholesale_price_html, $price, $product, $user_wholesale_role, $wholesale_price_title_text, $raw_wholesale_price, $source): string
+    static function renderWholeSalePrice($wholesale_price_html, $price, $product, $user_wholesale_role, $wholesale_price_title_text, $raw_wholesale_price, $source): string
     {
         self::$disable_strikeout[$product->get_id()] = true;
         if ($product->is_type('grouped')) {
@@ -40,7 +51,7 @@ class Base
      * @param string $price_html
      * @return bool
      */
-    function renderModifiedPrice(bool $enable, $product, string $price_html): bool
+    static function renderModifiedPrice(bool $enable, $product, string $price_html): bool
     {
         return isset(self::$disable_strikeout[$product->get_id()]) && self::$disable_strikeout[$product->get_id()] ? false : $enable;
     }
