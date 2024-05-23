@@ -12,10 +12,32 @@ class Base
     private static $disable_strikeout = [];
 
     /**
+     * Checks available rules.
+     *
+     * @return bool
+     */
+    function check()
+    {
+        $rules = \WDR\Core\Models\Custom\StoreRule::getRules();
+        if (empty($rules)) {
+            return false;
+        }
+        $res = [];
+        foreach ($rules as $rule) {
+            if ($rule->getDiscountContext() == 'item' && !in_array($rule->getType(), array('buy_x_get_x', 'buy_x_get_y'))) {
+                $res[] = $rule;
+            }
+        }
+        if (empty($res)) return false;
+        return true;
+    }
+
+    /**
      * @param array $hooks
      * @return array
      */
-    static function removeSuppressedHooks($hooks){
+    static function removeSuppressedHooks($hooks)
+    {
         if (empty($hooks) || !is_array($hooks)) return $hooks;
         if (isset($hooks['woocommerce_get_price_html'])) unset($hooks['woocommerce_get_price_html']);
         if (isset($hooks['woocommerce_before_calculate_totals'])) unset($hooks['woocommerce_before_calculate_totals']);

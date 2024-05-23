@@ -81,25 +81,6 @@ if (!file_exists(__DIR__ . '/vendor/autoload.php')) {
 }
 require __DIR__ . '/vendor/autoload.php';
 
-if (!function_exists('checkRulesExists')) {
-    function checkRulesExists()
-    {
-        $rules = \WDR\Core\Models\Custom\StoreRule::getRules();
-        if (empty($rules)) {
-            return false;
-        }
-        $res =[];
-        foreach ($rules as $rule){
-            if ($rule->getDiscountContext() == 'item'){
-                $res[] = $rule;
-            }
-        }
-        if (empty($res)) return false;
-        return true;
-    }
-}
-if (!checkRulesExists()) return;
-
 if (class_exists(\WSPC\App\Router::class)) {
     $plugin = new \WSPC\App\Router();
     if (method_exists($plugin, 'init')) $plugin->init();
