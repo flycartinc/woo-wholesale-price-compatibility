@@ -24,23 +24,37 @@ class Base
         }
         $res = [];
         foreach ($rules as $rule) {
-            if ($rule->getDiscountContext() == 'item' && !in_array($rule->getType(), array('buy_x_get_x', 'buy_x_get_y'))) {
+            if ($rule->getDiscountContext() == 'item' && !in_array($rule->getType(), array(
+                    'buy_x_get_x',
+                    'buy_x_get_y'
+                ))) {
                 $res[] = $rule;
             }
         }
-        if (empty($res)) return false;
+        if (empty($res)) {
+            return false;
+        }
+
         return true;
     }
 
     /**
      * @param array $hooks
+     *
      * @return array
      */
     static function removeSuppressedHooks($hooks)
     {
-        if (empty($hooks) || !is_array($hooks)) return $hooks;
-        if (isset($hooks['woocommerce_get_price_html'])) unset($hooks['woocommerce_get_price_html']);
-        if (isset($hooks['woocommerce_before_calculate_totals'])) unset($hooks['woocommerce_before_calculate_totals']);
+        if (empty($hooks) || !is_array($hooks)) {
+            return $hooks;
+        }
+        if (isset($hooks['woocommerce_get_price_html'])) {
+            unset($hooks['woocommerce_get_price_html']);
+        }
+        if (isset($hooks['woocommerce_before_calculate_totals'])) {
+            unset($hooks['woocommerce_before_calculate_totals']);
+        }
+
         return $hooks;
     }
 
@@ -52,6 +66,7 @@ class Base
      * @param $wholesale_price_title_text
      * @param $raw_wholesale_price
      * @param $source
+     *
      * @return string
      */
     static function renderWholeSalePrice($wholesale_price_html, $price, $product, $user_wholesale_role, $wholesale_price_title_text, $raw_wholesale_price, $source): string
