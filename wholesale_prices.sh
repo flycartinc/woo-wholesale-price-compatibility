@@ -1,4 +1,4 @@
-echo "Woo wholesale price compatibility"
+echo "Wholesale price compatibility"
 current_dir="$PWD"
 composer_run() {
   # shellcheck disable=SC2164
@@ -11,13 +11,13 @@ copy_folder() {
   cd $current_dir
   cd ..
   pack_folder=$PWD"/compressed_pack"
-  compress_plugin_folder=$pack_folder"/woo-wholesale-price-compatibility"
+  compress_plugin_folder=$pack_folder"/wdr-wholesale-prices-compatibility"
   if [ -d "$pack_folder" ]; then
     rm -r "$pack_folder"
   fi
   mkdir "$pack_folder"
   mkdir "$compress_plugin_folder"
-  move_dir=("App" "vendor" "woo-wholesale-price-compatibility.php")
+  move_dir=("App" "vendor" "wdr-wholesale-prices-compatibility.php")
   # shellcheck disable=SC2068
   for dir in ${move_dir[@]}; do
     cp -r "$current_dir/$dir" "$compress_plugin_folder/$dir"
@@ -29,7 +29,7 @@ zip_folder() {
   cd ..
   pack_compress_folder=$PWD"/compressed_pack"
   cd "$pack_compress_folder"
-  zip_name="woo-wholesale-price-compatibility"
+  zip_name="wdr-wholesale-prices-compatibility"
   rm "$zip_name".zip
   zip -r "$zip_name".zip $zip_name -q
   zip -d "$zip_name".zip __MACOSX/\*
