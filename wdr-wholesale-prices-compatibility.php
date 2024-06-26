@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:         Wholesale price compatibility
+ * Plugin Name:         Discount rules : Wholesale price compatibility
  * Plugin URI:          https://www.flycart.org
  * Description:         This add-on used for woocommerce wholesale prices Rymera Web Co compatibility for woo discount rules.
  * Version:             1.0.0
