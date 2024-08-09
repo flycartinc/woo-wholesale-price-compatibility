@@ -106,6 +106,11 @@ class Base {
      * @return mixed
      */
     public static function getWholesalePrice($product_price, $product, $source_id, $context) {
+        $user_id = get_current_user_id();
+        $user = !empty($user_id) ? get_userdata($user_id) : 0;
+        if (!empty($user) && !in_array('wholesale_customer', (array) $user->roles)) {
+            return $product_price;
+        }
         return is_object($product) && !empty($product) ? $product->get_meta( 'wholesale_customer_wholesale_price', true ) : 0;
     }
 }
