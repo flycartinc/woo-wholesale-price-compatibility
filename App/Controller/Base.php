@@ -77,7 +77,8 @@ class Base {
         if ( $product->is_type( 'grouped' ) ) {
             return $wholesale_price_html;
         }
-        $result = apply_filters( 'wdr_get_product_discounted_price', false, $product, 1, $raw_wholesale_price );
+	    $converted_price = self::getConvertAmount($raw_wholesale_price);
+	    $result = apply_filters( 'wdr_get_product_discounted_price', false, $product, 1, $converted_price );
 
         return ( $result !== false ) ? "<del>{$wholesale_price_html}</del><ins>{$wholesale_price_title_text} " . wc_price( $result ) . "</ins>"
             : $wholesale_price_html;
@@ -113,4 +114,32 @@ class Base {
         }
         return is_object($product) && !empty($product) ? $product->get_meta( 'wholesale_customer_wholesale_price', true ) : 0;
     }
+
+
+	/**
+	 * Convert the price based on currency.
+	 *
+	 * @param string $price Price.
+	 *
+	 * @return mixed
+	 */
+	public static function getConvertAmount($price){
+		if ( is_plugin_active( 'woocommerce-multilingual/wpml-woocommerce.php' ) ) {
+			global $woocommerce_wpml;
+			if ( ! defined( 'WCML_MULTI_CURRENCIES_INDEPENDENT' ) ) {
+				include_once WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'wpml-woocommerce' . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'constants.php';
+			}
+			if ( WCML_MULTI_CURRENCIES_INDEPENDENT === $woocommerce_wpml->settings['enable_multi_currency'] ) {
+				/**
+				 * Wrap raw price with 'wcml_formatted_price' filter so that conversion will be correct.
+				 * Only do this only if the currency is not the same as the default currency.
+				 */
+				$currency = $woocommerce_wpml->multi_currency->get_client_currency();
+				if ( $currency !== get_option( 'woocommerce_currency' ) ) {
+					return $woocommerce_wpml->multi_currency->prices->raw_price_filter($price, $currency) ;
+				}
+			}
+		}
+		return  $price;
+	}
 }
